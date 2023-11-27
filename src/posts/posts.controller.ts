@@ -1,4 +1,4 @@
-import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 // nest g resource 명령어로 posts 모듈 생성했음
@@ -66,7 +66,7 @@ export class PostsController {
   // 패스파라미터에서 :id에 해당하는 부분의 값을 id변수에 주입함.
   getPost(@Param('id') id: string){
     const post = posts.find((post)=>post.id === +id);
-    //포스트가 없을경우 throw
+    //포스트가 없을경우 에러 throw
     if (!post){
       throw new NotFoundException();
     }
@@ -76,6 +76,30 @@ export class PostsController {
 
   // 3) POST /posts
   //    post 생성
+  @Post()
+  postPosts(
+    @Body('author') author: string,
+    @Body('title') title: string,
+    @Body('content') content: string,
+  ){
+    const post: PostModel = {
+      id: posts[posts.length - 1].id + 1,
+      author,
+      title,
+      content,
+      likeCount: 0,
+      commentCount: 0,
+    };
+
+    posts = [
+      ...posts,
+      post
+    ];
+
+    return post;
+  };
+
+
   // 4) PUT /posts/:id
   //    id에 해당하는 post 변경
   // 5) DELETE /posts/:id
