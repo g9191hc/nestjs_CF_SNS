@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 // nest g resource 명령어로 posts 모듈 생성했음
@@ -60,9 +60,14 @@ export class PostsController {
     return posts;
   }
 
-  
   // 2) GET /posts/:id
   //    id에 해당하는 post
+  @Get(':id')
+  // 패스파라미터에서 :id에 해당하는 부분의 값을 id변수에 주입함.
+  getPost(@Param('id') id: string){
+    return posts.find((post)=>post.id === +id)
+  }
+
   // 3) POST /posts
   //    post 생성
   // 4) PUT /posts/:id
