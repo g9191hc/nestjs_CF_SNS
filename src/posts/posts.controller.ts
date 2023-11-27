@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 // nest g resource 명령어로 posts 모듈 생성했음
@@ -102,6 +102,36 @@ export class PostsController {
 
   // 4) PUT /posts/:id
   //    id에 해당하는 post 변경
+  @Put(':id')
+  putPost(
+    @Param('id') id: number,
+    @Body('author') author?: string,
+    @Body('title') title?: string,
+    @Body('content') content?: string,
+    ){
+    const post = posts.find((post)=>post.id === +id);
+
+    if(!post){
+      throw new NotFoundException;
+    };
+    
+    if(author){
+      post.author = author;
+    };
+
+    if(title){
+      post.title = title;
+    }
+
+    if(content){
+      post.content = content;
+    }
+
+    posts = posts.map((prevPost) => prevPost.id === +id ? post : prevPost);
+
+    return post;
+  }
+
   // 5) DELETE /posts/:id
   //    id에 해당하는 post 삭제
   
